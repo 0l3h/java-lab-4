@@ -1,43 +1,67 @@
 package com.example;
 
-import java.util.Objects;
-
+/**
+ * Клас, що представляє мобільний телефон.
+ */
 public class Phone {
-    private String brand;
     private String model;
-    private int price;
+    private String brand;
+    private double price;
+    private int storage;
 
-    // Конструктор з параметрами
-    public Phone(String brand, String model, int price) {
-        this.brand = brand;
+    /**
+     * Конструктор з валідацією параметрів.
+     * @param model назва моделі (не порожня)
+     * @param brand бренд (не порожній)
+     * @param price ціна (більше 0)
+     * @param storage обсяг пам'яті (більше 0)
+     */
+    public Phone(String model, String brand, double price, int storage) {
+        setModel(model);
+        setBrand(brand);
+        setPrice(price);
+        setStorage(storage);
+    }
+
+    public String getModel() { return model; }
+
+    public void setModel(String model) {
+        if (model == null || model.trim().isEmpty()) {
+            throw new IllegalArgumentException("Модель не може бути порожньою.");
+        }
         this.model = model;
+    }
+
+    public String getBrand() { return brand; }
+
+    public void setBrand(String brand) {
+        if (brand == null || brand.trim().isEmpty()) {
+            throw new IllegalArgumentException("Бренд не може бути порожнім.");
+        }
+        this.brand = brand;
+    }
+
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) {
+        if (price <= 0) {
+            throw new IllegalArgumentException("Ціна повинна бути більшою за 0.");
+        }
         this.price = price;
     }
 
-    // Гетери та сетери
-    public String getBrand() { return brand; }
-    public void setBrand(String brand) { this.brand = brand; }
+    public int getStorage() { return storage; }
 
-    public String getModel() { return model; }
-    public void setModel(String model) { this.model = model; }
-
-    public int getPrice() { return price; }
-    public void setPrice(int price) { this.price = price; }
-
-    // Метод toString()
-    @Override
-    public String toString() {
-        return "Phone{brand='" + brand + "', model='" + model + "', price=" + price + "}";
+    public void setStorage(int storage) {
+        if (storage <= 0) {
+            throw new IllegalArgumentException("Пам'ять повинна бути більшою за 0.");
+        }
+        this.storage = storage;
     }
 
-    // Метод equals()
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Phone phone = (Phone) o;
-        return price == phone.price && 
-               Objects.equals(brand, phone.brand) && 
-               Objects.equals(model, phone.model);
+    public String toString() {
+        return String.format("Телефон [Бренд: %s, Модель: %s, Ціна: %.2f, Пам'ять: %dGB]", 
+                brand, model, price, storage);
     }
 }
