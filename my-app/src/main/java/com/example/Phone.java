@@ -8,60 +8,58 @@ public class Phone {
     private String brand;
     private double price;
     private int storage;
+    private BodyType bodyType;
+
+    // Статичне поле для підрахунку об'єктів
+    private static int objectCount = 0;
 
     /**
-     * Конструктор з валідацією параметрів.
-     * @param model назва моделі (не порожня)
-     * @param brand бренд (не порожній)
-     * @param price ціна (більше 0)
-     * @param storage обсяг пам'яті (більше 0)
+     * Конструктор з валідацією.
      */
-    public Phone(String model, String brand, double price, int storage) {
-        setModel(model);
-        setBrand(brand);
-        setPrice(price);
-        setStorage(storage);
+    public Phone(String model, String brand, double price, int storage, BodyType bodyType) {
+        validateAndSet(model, brand, price, storage, bodyType);
+        objectCount++;
     }
 
-    public String getModel() { return model; }
-
-    public void setModel(String model) {
-        if (model == null || model.trim().isEmpty()) {
-            throw new IllegalArgumentException("Модель не може бути порожньою.");
+    /**
+     * Конструктор копіювання.
+     * @param other об'єкт, з якого копіюються дані.
+     */
+    public Phone(Phone other) {
+        if (other != null) {
+            this.model = other.model;
+            this.brand = other.brand;
+            this.price = other.price;
+            this.storage = other.storage;
+            this.bodyType = other.bodyType;
+            objectCount++;
         }
+    }
+
+    /**
+     * Статичний гетер для отримання кількості створених об'єктів.
+     */
+    public static int getObjectCount() {
+        return objectCount;
+    }
+
+    private void validateAndSet(String model, String brand, double price, int storage, BodyType bodyType) {
+        if (model == null || model.trim().isEmpty()) throw new IllegalArgumentException("Модель порожня");
+        if (brand == null || brand.trim().isEmpty()) throw new IllegalArgumentException("Бренд порожній");
+        if (price <= 0) throw new IllegalArgumentException("Ціна <= 0");
+        if (storage <= 0) throw new IllegalArgumentException("Пам'ять <= 0");
+        if (bodyType == null) throw new IllegalArgumentException("Тип корпусу не вказано");
+
         this.model = model;
-    }
-
-    public String getBrand() { return brand; }
-
-    public void setBrand(String brand) {
-        if (brand == null || brand.trim().isEmpty()) {
-            throw new IllegalArgumentException("Бренд не може бути порожнім.");
-        }
         this.brand = brand;
-    }
-
-    public double getPrice() { return price; }
-
-    public void setPrice(double price) {
-        if (price <= 0) {
-            throw new IllegalArgumentException("Ціна повинна бути більшою за 0.");
-        }
         this.price = price;
-    }
-
-    public int getStorage() { return storage; }
-
-    public void setStorage(int storage) {
-        if (storage <= 0) {
-            throw new IllegalArgumentException("Пам'ять повинна бути більшою за 0.");
-        }
         this.storage = storage;
+        this.bodyType = bodyType;
     }
 
     @Override
     public String toString() {
-        return String.format("Телефон [Бренд: %s, Модель: %s, Ціна: %.2f, Пам'ять: %dGB]", 
-                brand, model, price, storage);
+        return String.format("%s %s (Price: %.2f, Storage: %dGB, Body: %s)", 
+                brand, model, price, storage, bodyType);
     }
 }
