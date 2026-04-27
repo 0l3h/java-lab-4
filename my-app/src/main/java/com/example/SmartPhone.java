@@ -7,4 +7,9 @@ public class SmartPhone extends Phone {
         super(brand, model);
         this.os = os;
     }
+
+    @Override
+    public String getDescription() {
+        return "Смартфон " + brand + " " + model + " на базі " + os;
+    }
 }

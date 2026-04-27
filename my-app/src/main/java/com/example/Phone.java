@@ -8,4 +8,8 @@ public class Phone {
         this.brand = brand;
         this.model = model;
     }
+
+    public String getDescription() {
+        return "Це телефон " + brand;
+    }
 }

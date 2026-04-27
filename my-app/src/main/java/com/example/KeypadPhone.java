@@ -7,4 +7,9 @@ public class KeypadPhone extends Phone {
         super(brand, model);
         this.hasAntenna = hasAntenna;
     }
+
+    @Override
+    public String getDescription() {
+        return "Кнопковий телефон " + brand + (hasAntenna ? " з антеною" : " без антени");
+    }
 }
