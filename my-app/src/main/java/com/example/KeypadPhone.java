@@ -1,15 +1,15 @@
 package com.example;
 
 public class KeypadPhone extends Phone {
-    private boolean hasAntenna;
+    private boolean hasPhysicalButtons;
 
-    public KeypadPhone(String brand, String model, boolean hasAntenna) {
+    public KeypadPhone(String brand, String model, boolean hasPhysicalButtons) {
         super(brand, model);
-        this.hasAntenna = hasAntenna;
+        this.hasPhysicalButtons = hasPhysicalButtons;
     }
 
     @Override
-    public String getDescription() {
-        return "Кнопковий телефон " + brand + (hasAntenna ? " з антеною" : " без антени");
+    public String toString() {
+        return super.toString() + ", Кнопковий: " + (hasPhysicalButtons ? "Так" : "Ні");
     }
 }
