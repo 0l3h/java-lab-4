@@ -9,7 +9,7 @@ public class SmartPhone extends Phone {
     }
 
     @Override
-    public String getDescription() {
-        return "Смартфон " + brand + " " + model + " на базі " + os;
+    public String toString() {
+        return super.toString() + ", ОС: " + os;
     }
 }
