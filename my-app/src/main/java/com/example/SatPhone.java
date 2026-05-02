@@ -10,6 +10,6 @@ public class SatPhone extends KeypadPhone {
 
     @Override
     public String toString() {
-        return super.toString() + ", Супутникова мережа: " + satelliteNetwork;
+        return super.toString() + ", Мережа: " + satelliteNetwork;
     }
 }

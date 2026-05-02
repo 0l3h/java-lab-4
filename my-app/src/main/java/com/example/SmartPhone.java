@@ -8,6 +8,8 @@ public class SmartPhone extends Phone {
         this.os = os;
     }
 
+    public String getOs() { return os; }
+
     @Override
     public String toString() {
         return super.toString() + ", ОС: " + os;

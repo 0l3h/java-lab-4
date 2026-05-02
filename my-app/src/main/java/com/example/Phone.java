@@ -9,6 +9,9 @@ public class Phone {
         this.model = model;
     }
 
+    public String getBrand() { return brand; }
+    public String getModel() { return model; }
+
     @Override
     public String toString() {
         return String.format("Бренд: %s, Модель: %s", brand, model);
