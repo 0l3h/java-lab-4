@@ -8,6 +8,8 @@ public class KeypadPhone extends Phone {
         this.hasButtons = hasButtons;
     }
 
+    public boolean isHasButtons() { return hasButtons; }
+
     @Override
     public String toString() {
         return super.toString() + ", Кнопковий: " + (hasButtons ? "Так" : "Ні");
