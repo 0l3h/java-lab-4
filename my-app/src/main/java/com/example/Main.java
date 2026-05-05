@@ -11,30 +11,35 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        // Завантаження даних при старті
         storage = loadFromJson(FILE_NAME);
         
         while (true) {
-            System.out.println("\n--- МЕНЮ ---");
-            System.out.println("1. Створити об’єкт");
-            System.out.println("2. Вивести всі об’єкти");
-            System.out.println("3. Вихід та збереження");
-            System.out.print("Вибір: ");
+            System.out.println("\n--- ГОЛОВНЕ МЕНЮ ---");
+            System.out.println("1. Створити новий об’єкт");
+            System.out.println("2. Вивести інформацію про всі об’єкти");
+            System.out.println("3. Пошук об’єкта");
+            System.out.println("4. Завершити роботу");
+            System.out.print("Виберіть дію: ");
 
             String choice = scanner.nextLine();
-            if (choice.equals("1")) {
-                createObject();
-            } else if (choice.equals("2")) {
-                printObjects();
-            } else if (choice.equals("3")) {
-                saveToJson(storage, FILE_NAME);
-                System.out.println("Дані збережено.");
-                break;
+            switch (choice) {
+                case "1" -> objectCreationMenu();
+                case "2" -> printAllObjects();
+                case "3" -> searchMenu();
+                case "4" -> {
+                    saveToJson(storage, FILE_NAME);
+                    System.out.println("Дані збережено. Програму завершено.");
+                    return;
+                }
+                default -> System.out.println("Некоректний ввід.");
             }
         }
     }
 
-    private static void createObject() {
-        System.out.println("\nОберіть тип: 1.SmartPhone 2.IPhone 3.Keypad 4.SatPhone 0.Назад");
+    // --- МЕНЮ СТВОРЕННЯ ---
+    private static void objectCreationMenu() {
+        System.out.println("\nОберіть тип: 1.SmartPhone 2.IPhone 3.KeypadPhone 4.SatPhone 0.Назад");
         String type = scanner.nextLine();
         
         try {
@@ -58,33 +63,89 @@ public class Main {
                 case "4" -> {
                     System.out.print("Бренд: "); String b = scanner.nextLine();
                     System.out.print("Модель: "); String m = scanner.nextLine();
-                    System.out.print("Супутник: "); String s = scanner.nextLine();
+                    System.out.print("Мережа: "); String s = scanner.nextLine();
                     storage.add(new SatPhone(b, m, s));
                 }
+                case "0" -> { return; }
             }
         } catch (Exception e) {
-            System.out.println("Помилка вводу!");
+            System.out.println("Помилка при створенні об'єкта.");
         }
     }
 
-    private static void printObjects() {
-        if (storage.isEmpty()) System.out.println("Список порожній.");
-        for (Phone p : storage) System.out.println(p);
+    private static void printAllObjects() {
+        if (storage.isEmpty()) {
+            System.out.println("Колекція порожня.");
+        } else {
+            for (Phone p : storage) System.out.println(p);
+        }
     }
 
-    // --- РОБОТА З JSON (GSON) ---
+    // --- МЕНЮ ПОШУКУ ---
+    private static void searchMenu() {
+        if (storage.isEmpty()) {
+            System.out.println("Колекція порожня!");
+            return;
+        }
+        System.out.println("\n--- ПОШУК ---");
+        System.out.println("1. За брендом");
+        System.out.println("2. За операційною системою (для смартфонів)");
+        System.out.println("3. Тільки супутникові телефони");
+        System.out.println("0. Назад");
+        
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1" -> searchByBrand();
+            case "2" -> searchByOs();
+            case "3" -> searchSatPhones();
+            case "0" -> { return; }
+        }
+    }
 
+    private static void searchByBrand() {
+        System.out.print("Введіть бренд: ");
+        String brand = scanner.nextLine();
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone p : storage) {
+            if (p.getBrand().equalsIgnoreCase(brand)) result.add(p);
+        }
+        displayResults(result);
+    }
+
+    private static void searchByOs() {
+        System.out.print("Введіть ОС: ");
+        String os = scanner.nextLine();
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone p : storage) {
+            if (p instanceof SmartPhone && ((SmartPhone) p).getOs().equalsIgnoreCase(os)) {
+                result.add(p);
+            }
+        }
+        displayResults(result);
+    }
+
+    private static void searchSatPhones() {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone p : storage) {
+            if (p instanceof SatPhone) result.add(p);
+        }
+        displayResults(result);
+    }
+
+    private static void displayResults(ArrayList<Phone> res) {
+        if (res.isEmpty()) System.out.println("Нічого не знайдено.");
+        else for (Phone p : res) System.out.println(p);
+    }
+
+    // --- JSON ТА GSON ---
     public static void saveToJson(ArrayList<Phone> list, String fileName) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray jsonArray = new JsonArray();
-
         for (Phone p : list) {
             JsonElement element = gson.toJsonTree(p);
-            // Додаємо тип класу для однозначного відновлення
             element.getAsJsonObject().addProperty("type", p.getClass().getSimpleName());
             jsonArray.add(element);
         }
-
         try (FileWriter writer = new FileWriter(fileName)) {
             gson.toJson(jsonArray, writer);
         } catch (IOException e) {
@@ -94,26 +155,25 @@ public class Main {
 
     public static ArrayList<Phone> loadFromJson(String fileName) {
         ArrayList<Phone> list = new ArrayList<>();
-        Gson gson = new Gson();
         File file = new File(fileName);
-
         if (!file.exists()) return list;
 
         try (FileReader reader = new FileReader(fileName)) {
             JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+            Gson gson = new Gson();
             for (JsonElement element : jsonArray) {
                 JsonObject obj = element.getAsJsonObject();
                 String type = obj.get("type").getAsString();
-
                 switch (type) {
                     case "SmartPhone" -> list.add(gson.fromJson(obj, SmartPhone.class));
                     case "IPhone" -> list.add(gson.fromJson(obj, IPhone.class));
                     case "KeypadPhone" -> list.add(gson.fromJson(obj, KeypadPhone.class));
                     case "SatPhone" -> list.add(gson.fromJson(obj, SatPhone.class));
+                    case "Phone" -> list.add(gson.fromJson(obj, Phone.class));
                 }
             }
         } catch (Exception e) {
-            System.out.println("Помилка читання файлу.");
+            System.out.println("Помилка завантаження. Файл буде перезаписаний.");
         }
         return list;
     }
