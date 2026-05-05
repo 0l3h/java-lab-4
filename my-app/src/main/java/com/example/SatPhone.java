@@ -8,8 +8,10 @@ public class SatPhone extends KeypadPhone {
         this.satelliteNetwork = satelliteNetwork;
     }
 
+    public String getSatelliteNetwork() { return satelliteNetwork; }
+
     @Override
     public String toString() {
-        return super.toString() + ", Мережа: " + satelliteNetwork;
+        return super.toString() + ", Супутникова мережа: " + satelliteNetwork;
     }
 }
