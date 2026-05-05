@@ -8,6 +8,8 @@ public class IPhone extends SmartPhone {
         this.faceIdVersion = faceIdVersion;
     }
 
+    public String getFaceIdVersion() { return faceIdVersion; }
+
     @Override
     public String toString() {
         return super.toString() + ", FaceID: " + faceIdVersion;
