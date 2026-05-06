@@ -1,0 +1,4 @@
+SmartPhone;Samsung;S23;Android;10
+IPhone;15 Pro;v3;5
+SatPhone;Thuraya;XT;Global;2
+SmartPhone;Samsung;S23;Android;5
